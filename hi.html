@@ -1,1 +1,377 @@
-<h1>praneeth</h1>
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width,initial-scale=1" />
+	<title>Travel Planner — Budget · Itinerary · Checklist</title>
+
+	<!-- Google Font -->
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+	<style>
+		:root{
+			--bg:#050507;            /* black */
+			--card:#0f1720;          /* dark card */
+			--muted:#9aa4a6;
+			--accent:#7CFFB2;        /* light green */
+			--accent-strong:#5fe89a;
+			--glass: rgba(255,255,255,0.02);
+		}
+		html,body{height:100%}
+		body{
+			margin:0;
+			font-family:"Poppins",system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+			background: linear-gradient(180deg,var(--bg) 0%, #0b0d0e 60%);
+			color:#e6f7ef;
+			-webkit-font-smoothing:antialiased;
+			-moz-osx-font-smoothing:grayscale;
+			padding:28px;
+		}
+
+		header{
+			display:flex;
+			gap:18px;
+			align-items:center;
+			margin-bottom:20px;
+		}
+		.brand{
+			display:flex;
+			align-items:center;
+			gap:12px;
+		}
+		.logo{
+			width:52px;height:52px;border-radius:12px;
+			background:linear-gradient(135deg,var(--accent),var(--accent-strong));
+			box-shadow:0 6px 20px rgba(124,255,178,0.12), inset 0 -6px 18px rgba(255,255,255,0.04);
+			display:grid;place-items:center;font-weight:700;color:#062016;
+		}
+		h1{font-size:1.15rem;margin:0}
+		.lead{color:var(--muted);font-size:0.9rem;margin-top:4px}
+
+		main{
+			display:grid;
+			grid-template-columns: 1fr 420px;
+			gap:20px;
+			align-items:start;
+		}
+		@media (max-width:920px){
+			main{grid-template-columns:1fr;}
+		}
+
+		.left{
+			display:grid;
+			grid-template-columns:1fr 1fr;
+			gap:18px;
+		}
+		@media (max-width:720px){
+			.left{grid-template-columns:1fr;}
+		}
+
+		.card{
+			background:linear-gradient(180deg,var(--card), rgba(15,23,32,0.92));
+			border-radius:14px;
+			padding:16px;
+			box-shadow: 0 8px 30px rgba(2,6,8,0.6);
+			border:1px solid rgba(124,255,178,0.06);
+		}
+		.card h2{
+			margin:0 0 8px 0;font-size:1rem;display:flex;align-items:center;gap:8px;
+		}
+		.row{display:flex;gap:8px;align-items:center}
+		.input, .select, .small{
+			background:var(--glass);border:1px solid rgba(255,255,255,0.04);
+			color:var(--muted);padding:8px 10px;border-radius:10px;outline:none;
+		}
+		.input:focus{box-shadow:0 0 0 4px rgba(124,255,178,0.06);color:#e6f7ef}
+		.btn{
+			background:linear-gradient(180deg,var(--accent),var(--accent-strong));
+			color:#062016;border:none;padding:9px 12px;border-radius:10px;font-weight:600;cursor:pointer;
+			box-shadow:0 8px 20px rgba(124,255,178,0.08);
+		}
+		.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted)}
+		.small{font-size:0.9rem}
+
+		.expenses{margin-top:12px;display:flex;flex-direction:column;gap:8px;max-height:320px;overflow:auto;padding-right:6px}
+		.expense{
+			display:flex;justify-content:space-between;align-items:center;gap:10px;
+			padding:10px;border-radius:10px;background:linear-gradient(180deg,rgba(255,255,255,0.012),transparent);
+			border:1px solid rgba(255,255,255,0.02);
+		}
+		.expense .meta{color:var(--muted);font-size:0.95rem}
+		.icon-btn{background:transparent;border:none;color:var(--muted);cursor:pointer;padding:6px;border-radius:8px}
+		.progress{
+			height:10px;border-radius:10px;background:rgba(255,255,255,0.04);overflow:hidden;margin-top:10px;
+		}
+		.progress > i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-strong));width:0%}
+
+		.itinerary-list{display:flex;flex-direction:column;gap:10px;margin-top:10px;max-height:420px;overflow:auto;padding-right:6px}
+		.day{
+			border-radius:10px;padding:10px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);
+			border:1px solid rgba(255,255,255,0.02);
+		}
+		.activities{margin-top:8px;display:flex;flex-direction:column;gap:8px}
+		.activity{display:flex;justify-content:space-between;gap:8px;align-items:center}
+
+		.checklist{display:flex;flex-direction:column;gap:8px;margin-top:10px;max-height:420px;overflow:auto;padding-right:6px}
+		.check-item{display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px;background:rgba(255,255,255,0.01);border:1px solid rgba(255,255,255,0.02)}
+		.check-item.done{opacity:0.6;text-decoration:line-through;color:var(--muted)}
+
+		.footer-actions{display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap}
+		.small-muted{color:var(--muted);font-size:0.87rem}
+
+		/* tiny helpers */
+		.flex{display:flex;gap:8px;align-items:center}
+		small{color:var(--muted)}
+	</style>
+</head>
+<body>
+	<header>
+		<div class="brand">
+			<div class="logo">V</div>
+			<div>
+				<h1>Voyage Planner</h1>
+				<div class="lead">Black + light green — plan your trip: budget, itinerary & checklist</div>
+			</div>
+		</div>
+	</header>
+
+	<main>
+		<div class="left">
+			<!-- Budget Card -->
+			<section class="card" id="budgetCard">
+				<h2>Budget</h2>
+				<div class="row">
+					<input id="budgetLimit" class="input small" type="number" placeholder="Set total budget (e.g. 1200)" />
+					<button id="saveBudget" class="btn small">Set</button>
+					<button id="clearBudget" class="btn ghost small">Reset</button>
+				</div>
+
+				<div style="display:flex;justify-content:space-between;margin-top:12px;align-items:center">
+					<div>
+						<small class="small-muted">Total spent</small>
+						<div id="spentTotal" style="font-weight:700;font-size:1.1rem">₹0</div>
+					</div>
+					<div style="text-align:right">
+						<small class="small-muted">Remaining</small>
+						<div id="remaining" style="font-weight:700;font-size:1.1rem">₹0</div>
+					</div>
+				</div>
+
+				<div class="progress" aria-hidden="true"><i id="progressBar"></i></div>
+
+				<div style="margin-top:12px" class="row">
+					<input id="expenseName" class="input" placeholder="Expense (transport, food...)" />
+					<input id="expenseAmount" class="input" type="number" placeholder="Amount" style="width:110px" />
+					<button id="addExpense" class="btn">Add</button>
+				</div>
+
+				<div class="expenses" id="expensesList" aria-live="polite"></div>
+			</section>
+
+			<!-- Itinerary Card -->
+			<section class="card" id="itineraryCard">
+				<h2>Itinerary</h2>
+				<div class="row">
+					<input id="dayLabel" class="input" placeholder="Day label (e.g. Day 1 / Arrival)" />
+					<button id="addDay" class="btn">Add Day</button>
+				</div>
+
+				<div class="itinerary-list" id="itineraryList"></div>
+
+				<div class="footer-actions">
+					<button id="clearItinerary" class="btn ghost small">Clear Itinerary</button>
+					<small class="small-muted">Tap a day to add activities. Each activity can be removed.</small>
+				</div>
+			</section>
+		</div>
+
+		<!-- Right column: Checklist -->
+		<aside>
+			<section class="card">
+				<h2>Checklist</h2>
+				<div style="display:flex;gap:8px;align-items:center">
+					<input id="checkInput" class="input" placeholder="Add packing item (passport, charger...)" />
+					<button id="addCheck" class="btn">Add</button>
+				</div>
+
+				<div class="checklist" id="checklist"></div>
+
+				<div class="footer-actions">
+					<button id="clearDone" class="btn ghost small">Clear Done</button>
+					<button id="export" class="btn small">Export</button>
+					<small id="checkCounts" class="small-muted"></small>
+				</div>
+			</section>
+		</aside>
+	</main>
+
+<script>
+/* Minimal app state stored in localStorage */
+const ls = {
+	expenses: 'voyage_expenses_v1',
+	budget: 'voyage_budget_v1',
+	itinerary: 'voyage_itinerary_v1',
+	checklist: 'voyage_checklist_v1'
+};
+
+function $(id){return document.getElementById(id)}
+
+/* ---------------- Budget ---------------- */
+let expenses = JSON.parse(localStorage.getItem(ls.expenses) || '[]');
+let budgetLimit = Number(localStorage.getItem(ls.budget) || 0);
+
+function renderBudget(){
+	const list = $('expensesList'); list.innerHTML='';
+	let total=0;
+	expenses.forEach((e,idx)=>{
+		total += Number(e.amount || 0);
+		const el = document.createElement('div');
+		el.className='expense';
+		el.innerHTML = `<div>
+			<div style="font-weight:600">${escapeHtml(e.name)}</div>
+			<div class="meta">₹${Number(e.amount).toLocaleString()}</div>
+			</div>
+			<div style="display:flex;gap:6px;align-items:center">
+				<button class="icon-btn" data-idx="${idx}" title="remove">✕</button>
+			</div>`;
+		list.appendChild(el);
+	});
+	$('spentTotal').textContent = `₹${total.toLocaleString()}`;
+	const remaining = budgetLimit ? budgetLimit - total : 0;
+	$('remaining').textContent = budgetLimit ? `₹${Math.max(0,remaining).toLocaleString()}` : '—';
+	const pct = budgetLimit ? Math.min(100, Math.round((total/budgetLimit)*100)) : 0;
+	$('progressBar').style.width = pct + '%';
+	localStorage.setItem(ls.expenses, JSON.stringify(expenses));
+}
+
+$('addExpense').addEventListener('click', ()=>{
+	const name = $('expenseName').value.trim();
+	const amount = Number($('expenseAmount').value || 0);
+	if(!name || amount<=0) return flash('Please enter name and amount');
+	expenses.push({name, amount});
+	$('expenseName').value=''; $('expenseAmount').value='';
+	renderBudget();
+});
+
+$('expensesList').addEventListener('click', e=>{
+	if(e.target.matches('.icon-btn')){
+		const i = Number(e.target.dataset.idx);
+		expenses.splice(i,1);
+		renderBudget();
+	}
+});
+
+$('saveBudget').addEventListener('click', ()=> {
+	const v = Number($('budgetLimit').value || 0);
+	if(v<=0){ flash('Enter a valid budget'); return }
+	budgetLimit = v;
+	localStorage.setItem(ls.budget, budgetLimit);
+	renderBudget();
+	flash('Budget saved');
+});
+$('clearBudget').addEventListener('click', ()=>{
+	if(confirm('Reset budget and expenses?')){
+		expenses=[]; budgetLimit=0;
+		localStorage.removeItem(ls.expenses); localStorage.removeItem(ls.budget);
+		$('budgetLimit').value=''; renderBudget();
+	}
+});
+
+/* ---------------- Itinerary ---------------- */
+let itinerary = JSON.parse(localStorage.getItem(ls.itinerary) || '[]');
+function renderItinerary(){
+	const root = $('itineraryList'); root.innerHTML='';
+	itinerary.forEach((d,di)=>{
+		const day = document.createElement('div'); day.className='day';
+		day.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center">
+			<div style="font-weight:700">${escapeHtml(d.label || 'Day')}</div>
+			<div style="display:flex;gap:8px">
+				<button class="btn small ghost" data-add="${di}">+Activity</button>
+				<button class="btn small ghost" data-remove="${di}">Delete</button>
+			</div>
+		</div>
+		<div class="activities"></div>`;
+		const acts = day.querySelector('.activities');
+		(d.activities||[]).forEach((a,ai)=>{
+			const node = document.createElement('div'); node.className='activity';
+			node.innerHTML = `<div>${escapeHtml(a)}</div><div><button class="icon-btn" data-day="${di}" data-act="${ai}">✕</button></div>`;
+			acts.appendChild(node);
+		});
+		root.appendChild(day);
+	});
+	localStorage.setItem(ls.itinerary, JSON.stringify(itinerary));
+}
+$('addDay').addEventListener('click', ()=>{
+	const label = $('dayLabel').value.trim() || `Day ${itinerary.length+1}`;
+	itinerary.push({label, activities:[]});
+	$('dayLabel').value='';
+	renderItinerary();
+});
+$('itineraryList').addEventListener('click', e=>{
+	if(e.target.matches('[data-add]')){
+		const di = Number(e.target.dataset.add);
+		const act = prompt('Activity description (time, place):');
+		if(act) itinerary[di].activities.push(act);
+		renderItinerary();
+	}
+	if(e.target.matches('[data-remove]')){
+		const di = Number(e.target.dataset.remove);
+		if(confirm('Remove this day?')){
+			itinerary.splice(di,1); renderItinerary();
+		}
+	}
+	if(e.target.matches('.icon-btn') && e.target.dataset.day!=undefined){
+		const di = Number(e.target.dataset.day), ai = Number(e.target.dataset.act);
+		itinerary[di].activities.splice(ai,1); renderItinerary();
+	}
+});
+$('clearItinerary').addEventListener('click', ()=> {
+	if(confirm('Clear entire itinerary?')){ itinerary=[]; localStorage.removeItem(ls.itinerary); renderItinerary(); }
+});
+
+/* ---------------- Checklist ---------------- */
+let checklist = JSON.parse(localStorage.getItem(ls.checklist) || '[]');
+function renderChecklist(){
+	const root = $('checklist'); root.innerHTML='';
+	checklist.forEach((c,idx)=>{
+		const div = document.createElement('div'); div.className = 'check-item' + (c.done ? ' done' : '');
+		div.innerHTML = `<input type="checkbox" data-idx="${idx}" ${c.done?'checked':''} />
+			<div style="flex:1">${escapeHtml(c.text)}</div>
+			<button class="icon-btn" data-rem="${idx}">✕</button>`;
+		root.appendChild(div);
+	});
+	const total = checklist.length, done = checklist.filter(c=>c.done).length;
+	$('checkCounts').textContent = `${done}/${total} done`;
+	localStorage.setItem(ls.checklist, JSON.stringify(checklist));
+}
+$('addCheck').addEventListener('click', ()=> {
+	const v = $('checkInput').value.trim();
+	if(!v) return flash('Enter an item');
+	checklist.push({text:v, done:false});
+	$('checkInput').value=''; renderChecklist();
+});
+$('checklist').addEventListener('click', e=>{
+	if(e.target.matches('[data-rem]')){ checklist.splice(Number(e.target.dataset.rem),1); renderChecklist(); }
+	if(e.target.matches('input[type="checkbox"]')){
+		const i = Number(e.target.dataset.idx); checklist[i].done = e.target.checked; renderChecklist();
+	}
+});
+$('clearDone').addEventListener('click', ()=> {
+	checklist = checklist.filter(c=>!c.done); renderChecklist();
+});
+$('export').addEventListener('click', ()=> {
+	const out = {budget:{limit:budgetLimit,expenses},itinerary,checklist};
+	navigator.clipboard?.writeText(JSON.stringify(out,null,2));
+	alert('Planner JSON copied to clipboard');
+});
+
+/* ---------------- Utilities ---------------- */
+function renderAll(){ renderBudget(); renderItinerary(); renderChecklist(); }
+function flash(msg){ alert(msg) } // small placeholder; replace with toast if desired
+function escapeHtml(s){ return (s+'').replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
+
+/* initial read */
+renderAll();
+</script>
+</body>
+</html>
